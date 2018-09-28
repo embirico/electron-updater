@@ -226,7 +226,13 @@ class NsisUpdater extends _BaseUpdater().BaseUpdater {
     };
 
     try {
-      (0, _child_process().spawn)(installerPath, args, spawnOptions).unref();
+      // XXX(AE): The error in the below commented out spawn command doesn't get caught,
+      // so manually throw the error we expect from our NSIS installer, which requires elevation.
+      // This causes NsisUpdater to spawn it with elevation.
+      const err = new Error("fake error")
+      err.code = "EACCES"
+      throw err
+      // (0, _child_process().spawn)(installerPath, args, spawnOptions).unref();
     } catch (e) {
       // yes, such errors dispatched not as error event
       // https://github.com/electron-userland/electron-builder/issues/1129
